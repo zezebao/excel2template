@@ -76,11 +76,11 @@ package export
 				
 				var varStr:String = "";
 				var parseStr:String = "";
-				for (var i:int = 1; i < _cols.length; i++) 
+				for (var i:int = 1; i < COLS.length; i++) 
 				{
-					var value:String = sheet.getCellValue(_cols[i] + "2");
-					var excelTypeStr:String = sheet.getCellValue(_cols[i] + "3");
-					var desStr:String = sheet.getCellValue(_cols[i] + "4");
+					var value:String = sheet.getCellValue(COLS[i] + "2");
+					var excelTypeStr:String = sheet.getCellValue(COLS[i] + "3");
+					var desStr:String = sheet.getCellValue(COLS[i] + "4");
 					if(value == "")break;
 					
 					var typeStr:String = excelTypeStr;
@@ -115,7 +115,7 @@ package export
 					if(typeStr == "")
 					{
 						typeStr = "object";
-						Alert.show("发现未设置的类型" + _fileName + "," + (_cols[i] + "3"));
+						Alert.show("发现未设置的类型" + _fileName + "," + (COLS[i] + "3"));
 					}
 					
 					if(desStr != "")

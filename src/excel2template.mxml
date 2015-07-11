@@ -10,7 +10,9 @@
 			
 			import export.CPlusPlusExport;
 			import export.CSExport;
+			import export.Export;
 			import export.LuaExport;
+			import export.ServerJavaExport;
 			
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
@@ -80,26 +82,20 @@
 			protected function outputBtn_clickHandler(event:MouseEvent):void
 			{
 				Config.OUT_TYPE = comboBox.selectedItem.value;
+				Config.exportIndex ++;
+				
 				Config.savePath();
+				
 				var dataProvider:ArrayList = tempateList.dataProvider as ArrayList;
 				var len:int = dataProvider.source.length;		
 				for (var i:int = 0; i < len; i++) 
 				{
 					var obj:Object = dataProvider.source[i];
 					
-					switch(Config.OUT_TYPE)
+					var cls = comboBox.selectedItem.cls;
+					if(null != cls)
 					{
-						case Config.TYPE_CPP:
-							new CPlusPlusExport(obj.path);
-							break;
-						case Config.TYPE_CS:
-							new CSExport(obj.path);
-							break;
-						case Config.TYPE_LUA:
-							new LuaExport(obj.path);
-							break;
-						case Config.TYPE_AS:
-							break;
+						var export:Export = new cls(obj.path) as Export;	
 					}
 				}
 			}

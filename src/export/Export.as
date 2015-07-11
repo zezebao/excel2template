@@ -18,15 +18,15 @@ package export
 	{
 		protected var excel_loader:XLSXLoader=new XLSXLoader();
 		protected var _file:File;
-		/**
-		 * 文件名字 
-		 */		
-		protected var _fileName:String;
 		
-		/**
-		 * 列标记 
-		 */		
-		protected var _cols:Array = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+		/**文件名字*/		
+		protected var _fileName:String;
+		/**文件名小写*/
+		protected var _fileNameLower:String;
+		/**服务器表名*/
+		protected var _tabelName:String;
+		/**列标记*/		
+		protected const COLS:Array = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 		
 		public function Export(path:String)
 		{
@@ -37,6 +37,8 @@ package export
 				return;
 			}
 			_fileName = _file.name.replace("Template.xlsx","");
+			_fileNameLower = _fileName.toLocaleLowerCase();
+			_tabelName = "template_" + _fileNameLower;
 			
 			excel_loader.addEventListener(Event.COMPLETE,loadingComplete);
 			var fs:FileStream = new FileStream();
@@ -61,6 +63,7 @@ package export
 			{
 				saveClass(sheet);
 			}
+			saveSQL(sheet);
 			MyLog.Record(_fileName + "发布成功," + DateUtil.getDateString(new Date()));
 		}
 		
@@ -86,11 +89,11 @@ package export
 			bytes.writeInt(rowList.length);
 			for (i = 0; i < rowList.length; i++) 
 			{
-				for (var j:int = 1; j < _cols.length; j++) 
+				for (var j:int = 1; j < COLS.length; j++) 
 				{
-					var value:String = sheet.getCellValue(_cols[j] + rowList[i]);
-					var id:String = sheet.getCellValue(_cols[j] + "2");
-					var excelTypeStr:String = sheet.getCellValue(_cols[j] + "3");
+					var value:String = sheet.getCellValue(COLS[j] + rowList[i]);
+					var id:String = sheet.getCellValue(COLS[j] + "2");
+					var excelTypeStr:String = sheet.getCellValue(COLS[j] + "3");
 					
 					if(id == "")break;
 					switch(excelTypeStr)
@@ -127,13 +130,26 @@ package export
 			newFs.writeInt(bytes.length);
 			if(Config.IS_ZLIB)
 			{
-				bytes.compress();	
+				bytes.compress();
 			}
 			newFs.writeBytes(bytes);
 			newFs.close();
 		}
 		
+		/**
+		 * 保存类模板 
+		 * @param sheet
+		 */		
 		protected function saveClass(sheet:Worksheet):void
+		{
+			
+		}
+		
+		/**
+		 * 保存SQL模板 
+		 * @param sheet
+		 */		
+		protected function saveSQL(sheet:Worksheet):void
 		{
 			
 		}
@@ -147,10 +163,10 @@ package export
 		{
 			var i:int = 0;
 			//判断有没有字段没有定义
-			for (i = 1; i < _cols.length; i++) 
+			for (i = 1; i < COLS.length; i++) 
 			{
-				var value:String = sheet.getCellValue(_cols[i] + "2");
-				var excelTypeStr:String = sheet.getCellValue(_cols[i] + "3");
+				var value:String = sheet.getCellValue(COLS[i] + "2");
+				var excelTypeStr:String = sheet.getCellValue(COLS[i] + "3");
 				
 				if(value != "")
 				{
@@ -182,14 +198,14 @@ package export
 			}
 			for (i = 0; i < rowList.length; i++) 
 			{
-				for (var j:int = 1; j < _cols.length; j++) 
+				for (var j:int = 1; j < COLS.length; j++) 
 				{
-					var value:String = sheet.getCellValue(_cols[j] + rowList[i]);
-					var typeStr:String = sheet.getCellValue(_cols[j] + "3");
+					var value:String = sheet.getCellValue(COLS[j] + rowList[i]);
+					var typeStr:String = sheet.getCellValue(COLS[j] + "3");
 					if(typeStr == "")break;
 					if(value == "" && typeStr != "string")
 					{
-						MyLog.RecordError(_fileName + "有未填写的内容,id：" + id + "，行列：" + _cols[j] + rowList[i]);
+						MyLog.RecordError(_fileName + "有未填写的内容,id：" + id + "，行列：" + COLS[j] + rowList[i]);
 						return false;
 					}
 				}
