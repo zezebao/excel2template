@@ -100,20 +100,18 @@ package export
 							parseStr += "this." + value + " = table.get(\"" + value + "\").toString();";
 							break;
 					}
-					varStr += "public " + typeStr + " " + value + ";";
-					parseStr += "\n\t\t";
+					if(desStr != "")varStr += "/**" + desStr + "*/\n";
+					varStr += "\tpublic " + typeStr + " " + value + ";";
+					varStr += "\n\t";
 					
+					parseStr += "\n\t\t";
 					if(typeStr == "")
 					{
 						typeStr = "object";
 						Alert.show("发现未设置的类型" + _fileName + "," + (COLS[i] + "3"));
 					}
 					
-					if(desStr != "")
-					{
-						varStr += "\t// " + desStr;
-					}
-					varStr += "\n\t";
+					
 				}
 				
 				content = content.replace(Config.RP_VAR,varStr);

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	width="524" height="298" fontFamily="微软雅黑" title="创建新项目"
+	close="closeHandler(event)"
+	initialize="titlewindow1_initializeHandler(event)"
+	>
+	
+	<fx:Script>
+		<![CDATA[
+			import data.Config;
+			import data.ProjInfo;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			protected function titlewindow1_initializeHandler(event:FlexEvent):void
+			{
+				projNameLabel.restrict = "^ ";
+				comboBox.dataProvider = Config.OUT_DATA;
+				comboBox.selectedIndex = Config.OUT_TYPE;
+			}
+			
+			protected function createBtn_clickHandler(event:MouseEvent):void
+			{
+				if("" == projNameLabel.text)
+				{
+					Alert.show("数据不完整");
+					return;
+				}
+				if("" == sourcePathLabel.text)
+				{
+					Alert.show("数据不完整");
+					return;
+				}
+				if("" == outputPathLabel.text)
+				{
+					Alert.show("数据不完整");
+					return;
+				}
+				if("" == outputPathLabel1.text)
+				{
+					Alert.show("数据不完整");
+					return;
+				}
+				
+				var projInfo:ProjInfo = new ProjInfo(projNameLabel.text);
+				projInfo.sourcePath = sourcePathLabel.text;
+				projInfo.outPath1 = outputPathLabel.text;
+				projInfo.outPath2 = outputPathLabel1.text;
+				projInfo.outType = comboBox.selectedIndex;
+			
+				closeHandler();
+				excel2template.instance.updateProjList();
+				excel2template.instance.openProj(projInfo);
+			}
+			
+			protected function closeHandler(event:CloseEvent=null):void
+			{
+				PopUpManager.removePopUp(this);			
+			}
+			
+			protected function broSourceHandler(event:MouseEvent):void
+			{
+				var file:File = File.applicationDirectory;
+				file.addEventListener(Event.SELECT,onSelectHandler);
+				file.browseForDirectory("选择输出目录");
+				function onSelectHandler(evt:Event):void
+				{
+					sourcePathLabel.text = file.nativePath;
+				}
+			}
+			
+			protected function broClassHandler(event:MouseEvent):void
+			{
+				var file:File = File.applicationDirectory;
+				file.addEventListener(Event.SELECT,onSelectHandler);
+				file.browseForDirectory("选择输出目录");
+				function onSelectHandler(evt:Event):void
+				{
+					outputPathLabel.text = file.nativePath;
+				}
+			}
+			
+			protected function broDataHandler(event:MouseEvent):void
+			{
+				var file:File = File.applicationDirectory;
+				file.addEventListener(Event.SELECT,onSelectHandler);
+				file.browseForDirectory("选择输出目录");
+				function onSelectHandler(evt:Event):void
+				{
+					outputPathLabel1.text = file.nativePath;
+				}				
+			}
+			
+		]]>
+	</fx:Script>
+	
+
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Button id="createBtn" x="215" y="227" width="92" height="28" label="创建" click="createBtn_clickHandler(event)"/>
+	<s:Label x="21" y="21" text="项目名:"/>
+	<s:Label x="21" y="59" text="类型"/>
+	<s:TextInput id="projNameLabel" x="71" y="15" width="187"/>
+	<s:Label x="21" y="91" text="模板表:"/>
+	<s:TextInput id="sourcePathLabel" x="71" y="85" width="373"/>
+	<s:Label x="21" y="125" text="输出类:"/>
+	<s:TextInput id="outputPathLabel" x="71" y="119" width="373"/>
+	<s:Button id="broBtn1" x="452" y="85" width="50" label="浏览" click="broSourceHandler(event)"/>
+	<s:Button id="broBtn2" x="452" y="121" width="50" label="浏览" click="broClassHandler(event)"/>
+	<s:Label x="20" y="161" text="输出数据:"/>
+	<s:TextInput id="outputPathLabel1" x="70" y="155" width="373"/>
+	<s:Button id="broBtn0" x="451" y="157" width="50" label="浏览" click="broDataHandler(event)"/>
+	<s:ComboBox id="comboBox" x="71" y="52"/>
+</s:TitleWindow>

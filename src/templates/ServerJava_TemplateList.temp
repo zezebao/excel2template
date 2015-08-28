@@ -10,10 +10,10 @@ package com.lkcf.templates;
 
 import java.io.IOException;
 
-/// <summary>
-/// {@des}
-/// </summary>
 //startBuild
+/**
+* {@des}
+*/
 public class {@templateName}TemplateList extends BaseTemplateList<{@templateName}Template> {
 
 	public {@templateName}TemplateList() throws IOException {

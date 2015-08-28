@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="670" height="58" fontFamily="微软雅黑"
+		 >
+	<fx:Script>
+		<![CDATA[
+			import data.ProjInfo;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			private var _projInfo:ProjInfo;
+			
+			public function get projInfo():ProjInfo
+			{
+				return _projInfo;
+			}
+
+			public function set projInfo(value:ProjInfo):void
+			{
+				_projInfo = value;
+				
+				if(value)
+				{
+					pathLabel.text = value.sourcePath;
+					nameLabel.text = value.projName;
+				}
+			}
+			
+			protected function openBtn_clickHandler(event:MouseEvent):void
+			{
+				projInfo.updateConfig();
+				excel2template.instance.openProj(projInfo);			
+			}
+			
+			protected function deleteBtn_clickHandler(event:MouseEvent):void
+			{
+				function closeHandler(evt:CloseEvent):void
+				{
+					if(Alert.OK == evt.detail)
+					{
+						excel2template.instance.deleteProj(projInfo);
+					}
+				}
+				Alert.show("确定删除？","",Alert.OK | Alert.CANCEL,null,closeHandler);			
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:BorderContainer width="100%" height="58" fontFamily="微软雅黑">
+		<s:Button id="openBtn" x="596" y="5" label="打开" click="openBtn_clickHandler(event)"/>
+		<s:Button id="deleteBtn" x="596" y="30" label="删除" click="deleteBtn_clickHandler(event)"/>	
+		<s:Label x="21" y="10" text="项目名："/>
+		<s:Label x="21" y="36" text="路径："/>
+		<s:Label id="nameLabel" x="73" y="5" width="380" fontSize="20" text="项目名："/>
+		<s:Label id="pathLabel" x="73" y="36" width="438" fontSize="12" text="项目名："/>
+	</s:BorderContainer>
+</s:Group>

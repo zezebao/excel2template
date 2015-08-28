@@ -7,194 +7,60 @@
 	<fx:Script>
 		<![CDATA[
 			import data.Config;
+			import data.ProjInfo;
 			
-			import export.CPlusPlusExport;
-			import export.CSExport;
-			import export.Export;
-			import export.LuaExport;
-			import export.ServerJavaExport;
-			
-			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
 			
-			import utils.MyLog;
+			import view.CreateProj;
+			import view.ProjListView;
+			import view.ProjView;
+			
+			public static var instance:excel2template;
 			
 			protected function windowedapplication1_initializeHandler(event:FlexEvent):void
 			{
+				instance = this;
+				
 				Config.setup();
-				MyLog.textarea = debugLabel;
-				initEvent();
-				initView();
-				loadList();
+				updateProjList();
 			}
 			
-			private function initEvent():void
+			public function updateProjList():void
 			{
-				this.addEventListener(KeyboardEvent.KEY_UP,onKeyUpHandler);	
-			}
-			
-			private function onKeyUpHandler(evt:KeyboardEvent):void
-			{
-				switch(evt.keyCode)
-				{
-					case Keyboard.F1:
-						break;
-				}
-			}
-			
-			private function initView():void
-			{
-				pathLabel.text = Config.TEMPLATE_PATH;
-				classPathLabel.text = Config.TEMPLATE_CLASS_PATH;
-				binaryPathLabel.text = Config.TEMPLATE_BINARY_PATH;
+				myGroup.removeAllElements();
 				
-				
-				comboBox.dataProvider = Config.OUT_DATA;
-				comboBox.selectedIndex = Config.OUT_TYPE;
-				
-				isOutClass.selected = Config.IS_EXPORT_CLASS;
-				isZlib.selected = Config.IS_ZLIB;
-			}
-			
-			//创建新模版
-			protected function createBtn_clickHandler(event:MouseEvent):void
-			{
-				if(newLabel.text != "")
-				{
-					var file:File = new File(File.applicationDirectory.nativePath + "/templates/Template.xlsx");
-					var newFile:File = new File(Config.TEMPLATE_PATH + "/" + newLabel.text + "Template.xlsx");
-					file.copyTo(newFile, true);
-					
-					try
-					{
-						newFile.openWithDefaultApplication();
-					} 
-					catch(error:Error)
-					{
-						
-					}
-				}
-				newLabel.text = "";
-				loadList();
-			}
-			
-			//输出
-			protected function outputBtn_clickHandler(event:MouseEvent):void
-			{
-				Config.OUT_TYPE = comboBox.selectedItem.value;
-				Config.exportIndex ++;
-				
-				Config.savePath();
-				
-				var dataProvider:ArrayList = tempateList.dataProvider as ArrayList;
-				var len:int = dataProvider.source.length;		
-				for (var i:int = 0; i < len; i++) 
-				{
-					var obj:Object = dataProvider.source[i];
-					
-					var cls = comboBox.selectedItem.cls;
-					if(null != cls)
-					{
-						var export:Export = new cls(obj.path) as Export;	
-					}
-				}
-			}
-			
-			protected function changePathBtn_clickHandler(event:MouseEvent):void
-			{
-				var file:File = File.applicationDirectory;
-				file.addEventListener(Event.SELECT,onSelectHandler);
-				file.browseForDirectory("选择输出目录");
-				
-				function onSelectHandler(evt:Event):void
-				{
-					Config.TEMPLATE_PATH = file.nativePath;
-					initView();
-					loadList();
-				}
-			}
-			
-			protected function changeClassPathBtn_clickHandler(event:MouseEvent):void
-			{
-				var file:File = File.applicationDirectory;
-				file.addEventListener(Event.SELECT,onSelectHandler);
-				file.browseForDirectory("选择输出目录");
-				
-				function onSelectHandler(evt:Event):void
-				{
-					Config.TEMPLATE_CLASS_PATH = file.nativePath;
-					Config.savePath();
-					initView();
-//					loadList();
-				}
-			}
-			
-			protected function changeBinaryPathBtn_clickHandler(event:MouseEvent):void
-			{
-				var file:File = File.applicationDirectory;
-				file.addEventListener(Event.SELECT,onSelectHandler);
-				file.browseForDirectory("选择输出目录");
-				
-				function onSelectHandler(evt:Event):void
-				{
-					Config.TEMPLATE_BINARY_PATH = file.nativePath;
-					Config.savePath();
-					initView();
-//					loadList();
-				}
-			}
-			
-			private function loadList():void
-			{
-				var file:File = new File(Config.TEMPLATE_PATH);
-				if(!file.exists)
-				{
-					Alert.show("模版表文件夹不存在");
-					return;	
-				}
-				var dataArr:Array = [];
-				var dataProvider:ArrayList = new ArrayList();
-				var list:Array = file.getDirectoryListing();
+				var list:Vector.<ProjInfo> = Config.getProjList();
 				for (var i:int = 0; i < list.length; i++) 
 				{
-					var fi:File = list[i] as File;
-					if(fi.extension == "xls" || fi.extension == "xlsx")
-					{
-						if(fi.name.indexOf("~$") == -1)
-						{
-							dataProvider.addItem({"name":fi.name,"path":fi.nativePath});	
-						}
-					}
+					var element:ProjListView = new ProjListView();
+					myGroup.addElement(element);
+					element.projInfo = list[i];
 				}
-				tempateList.dataProvider = dataProvider;
 			}
 			
-			protected function openPathBtn_clickHandler(event:MouseEvent):void
+			public function openProj(projInfo:ProjInfo):void
 			{
-				/*
-				NativeApplication.nativeApplication.autoExit=true;
-				var file:File = new File("/Applications/Path Finder.app");
-				var nativeProcessStartupInfo:NativeProcessStartupInfo = new NativeProcessStartupInfo();
-				nativeProcessStartupInfo = new NativeProcessStartupInfo();
-				nativeProcessStartupInfo.executable = file;
-				var arguments:Vector.<String> = new Vector.<String>();
-				arguments.push(Config.TEMPLATE_PATH);
-				nativeProcessStartupInfo.arguments = arguments;
-				
-				var process = new NativeProcess();
-				process.start(nativeProcessStartupInfo);
-				*/
+				var projView:ProjView = new ProjView();
+				addElement(projView);
+				projView.setProjInfo(projInfo);
 			}
 			
-			protected function flushBtn_clickHandler(event:MouseEvent):void
+			public function deleteProj(projInfo:ProjInfo):void
 			{
-				loadList();				
+				var file:File = new File(projInfo.projFilePath);
+				if(file.exists)
+				{
+					file.deleteFile();
+					
+					Config.updateProjList();
+					updateProjList();
+				}
 			}
 			
-			protected function isOutClass_changeHandler(event:Event):void
+			protected function createProjHandler(event:MouseEvent):void
 			{
-				Config.IS_EXPORT_CLASS = isOutClass.selected;
-				Config.IS_ZLIB = isZlib.selected;
+				var pop:CreateProj = CreateProj(PopUpManager.createPopUp(this, CreateProj, true));
 			}
 			
 		]]>
@@ -202,40 +68,23 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:Label x="11" y="69" fontSize="12" text="模版表位置："/>
-	<s:TextInput id="pathLabel" x="90" y="63" width="407" editable="false"/>
-	<s:Label x="10" y="16" fontFamily="黑体" fontSize="30" text="模版表编辑工具"/>
-	<s:Button id="changePathBtn" x="504" y="63" label="更改" click="changePathBtn_clickHandler(event)"/>
-	<s:Button id="openPathBtn" x="585" y="63" label="打开" click="openPathBtn_clickHandler(event)"/>
-	<s:Button id="flushBtn" x="585" y="63" label="刷新" click="flushBtn_clickHandler(event)"/>
-	<s:Label x="11" y="97" fontSize="12" text="输出类位置："/>
-	<s:Label x="10" y="174" fontSize="12" text="创建新表："/>
-	<s:TextInput id="classPathLabel" x="90" y="91" width="407" editable="false"/>
-	<s:Button id="changeClassPathBtn" x="504" y="91" label="更改" click="changeClassPathBtn_clickHandler(event)"/>
-	<s:Label x="10" y="126" fontSize="12" text="输出数据位置："/>
-	<s:TextInput id="binaryPathLabel" x="89" y="120" width="407" editable="false"/>
-	<s:Button id="changeBinaryPathBtn" x="503" y="120" label="更改" click="changeBinaryPathBtn_clickHandler(event)"/>
-	<s:Button id="outputBtn" x="396" y="12" width="77" height="34" label="输出" fontFamily="黑体"
-			  fontSize="20" click="outputBtn_clickHandler(event)"/>
-	<s:DataGrid id="tempateList" x="10" y="203" width="652" height="300" editable="true"
-				requestedRowCount="4">
-		<s:columns>
-			<s:ArrayList>
-				<s:GridColumn dataField="name" headerText="表名" width="100"></s:GridColumn>
-				<s:GridColumn dataField="path" headerText="路径"></s:GridColumn>
-			</s:ArrayList>
-		</s:columns>
-		<s:typicalItem>
-			<fx:Object name="示例数据" path="示例数据"></fx:Object>
-		</s:typicalItem>
-		<s:ArrayList>
-		</s:ArrayList>
-	</s:DataGrid>
-	<s:CheckBox id="isOutClass" x="480" y="29" label="输出类文件" selected="true" change="isOutClass_changeHandler(event)"/>
-	<s:CheckBox id="isZlib" x="571" y="29" label="Zlib压缩" selected="true" change="isOutClass_changeHandler(event)"/>
-	<s:TextInput id="newLabel" x="90" y="169" prompt="新表名字" restrict="A-Za-z0-9"/>
-	<s:Button id="createBtn" x="226" y="170" label="创建" click="createBtn_clickHandler(event)"/>
-	<s:TextArea id="debugLabel" x="10" y="511" width="652" height="146" editable="false"/>
-	<s:ComboBox id="comboBox" x="238" y="21"/>
 	
+	<s:Panel width="100%" height="100%" fontFamily="微软雅黑" title="模板表工具">
+		<s:Button x="288" y="7" width="86" height="26" label="增加项目" click="createProjHandler(event)"/>
+		
+		<s:Scroller width="100%"
+					height="100%"
+					y = "60"
+					>
+			<s:Group width="100%"
+					 height="100%">
+				<s:VGroup left="0"
+						  right="0"
+						  top="0"
+						  bottom="0"
+						  id="myGroup">
+				</s:VGroup>
+			</s:Group>
+		</s:Scroller>
+	</s:Panel>
 </s:WindowedApplication>
