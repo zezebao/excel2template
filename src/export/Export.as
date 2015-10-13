@@ -117,6 +117,8 @@ package export
 							bytes.writeBoolean((value == "true" || value == "1"));
 							break;
 						case "string":
+						case "array":
+						case "intArray":
 							//							bytes.writeUTFBytes(value); //这个方法，目前c#还没有写对应的解析，暂时没有发现问题
 							bytes.writeUTF(value);
 							break;
@@ -203,7 +205,7 @@ package export
 					var value:String = sheet.getCellValue(COLS[j] + rowList[i]);
 					var typeStr:String = sheet.getCellValue(COLS[j] + "3");
 					if(typeStr == "")break;
-					if(value == "" && typeStr != "string")
+					if(value == "" && !isStringType(typeStr))
 					{
 						MyLog.RecordError(_fileName + "有未填写的内容,id：" + id + "，行列：" + COLS[j] + rowList[i]);
 						return false;
@@ -211,6 +213,11 @@ package export
 				}
 			}
 			return true;
+		}
+		
+		private function isStringType(typeStr:String):Boolean
+		{
+			return typeStr == "string" || typeStr == "intArray" || typeStr == "array";
 		}
 	}
 }

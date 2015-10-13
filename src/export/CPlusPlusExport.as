@@ -113,6 +113,8 @@ package export
 							parseStr += value + " = bytes->readBoolean();";
 							break;
 						case "string":
+						case "array":
+						case "intArray":
 							parseStr += value + " = bytes->readString();";
 							break;
 					}

@@ -99,8 +99,14 @@ package export
 						case "string":
 							parseStr += "self." + value + " = bytes:readString()";
 							break;
+						case "array": //逗号分隔的数组
+							parseStr += "self." + value + " = gg_string_split(bytes:readString(),',')";
+							break;
+						case "intArray"://逗号分隔的数字数组
+							parseStr += "self." + value + " = gg_string_split_2number(bytes:readString(),',')";
+							break;
 					}
-					parseStr += "\n\t\t";
+					parseStr += "\n\t";
 					
 					if(typeStr == "")
 					{

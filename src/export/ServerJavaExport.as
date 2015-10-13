@@ -96,6 +96,8 @@ package export
 							parseStr += "this." + value + " = ((Integer)table.get(\"" + value + "\")).intValue() == 1;";
 							break;
 						case "string":
+						case "array":
+						case "intArray":
 							typeStr = "String";
 							parseStr += "this." + value + " = table.get(\"" + value + "\").toString();";
 							break;

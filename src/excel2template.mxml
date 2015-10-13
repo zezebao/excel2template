@@ -2,7 +2,8 @@
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
 					   xmlns:s="library://ns.adobe.com/flex/spark"
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
-					   width="672" height="685"
+					   maxWidth="672" maxHeight="685"
+					   minWidth="672" minHeight="685"
 					   initialize="windowedapplication1_initializeHandler(event)">
 	<fx:Script>
 		<![CDATA[
@@ -30,6 +31,7 @@
 			{
 				myGroup.removeAllElements();
 				
+				Config.updateProjList();
 				var list:Vector.<ProjInfo> = Config.getProjList();
 				for (var i:int = 0; i < list.length; i++) 
 				{
@@ -61,6 +63,7 @@
 			protected function createProjHandler(event:MouseEvent):void
 			{
 				var pop:CreateProj = CreateProj(PopUpManager.createPopUp(this, CreateProj, true));
+				PopUpManager.centerPopUp(pop);
 			}
 			
 		]]>

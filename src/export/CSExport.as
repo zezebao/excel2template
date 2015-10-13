@@ -107,6 +107,8 @@ package export
 							parseStr += value + " = bytes.ReadBoolean();";
 							break;
 						case "string":
+						case "array":
+						case "intArray":
 							parseStr += value + " = bytes.ReadString();";
 							break;
 					}

@@ -106,15 +106,15 @@
 	<s:Button id="createBtn" x="215" y="227" width="92" height="28" label="创建" click="createBtn_clickHandler(event)"/>
 	<s:Label x="21" y="21" text="项目名:"/>
 	<s:Label x="21" y="59" text="类型"/>
-	<s:TextInput id="projNameLabel" x="71" y="15" width="187"/>
-	<s:Label x="21" y="91" text="模板表:"/>
-	<s:TextInput id="sourcePathLabel" x="71" y="85" width="373"/>
-	<s:Label x="21" y="125" text="输出类:"/>
-	<s:TextInput id="outputPathLabel" x="71" y="119" width="373"/>
+	<s:TextInput id="projNameLabel" x="121" y="14" width="187"/>
+	<s:Label x="21" y="91" text="excel模板表路径:"/>
+	<s:TextInput id="sourcePathLabel" x="121" y="85" width="323"/>
+	<s:Label x="21" y="125" text="输出类文件位置:"/>
+	<s:TextInput id="outputPathLabel" x="121" y="119" width="323"/>
 	<s:Button id="broBtn1" x="452" y="85" width="50" label="浏览" click="broSourceHandler(event)"/>
 	<s:Button id="broBtn2" x="452" y="121" width="50" label="浏览" click="broClassHandler(event)"/>
-	<s:Label x="20" y="161" text="输出数据:"/>
-	<s:TextInput id="outputPathLabel1" x="70" y="155" width="373"/>
+	<s:Label x="20" y="161" text="输出数据文件位置:"/>
+	<s:TextInput id="outputPathLabel1" x="121" y="155" width="322"/>
 	<s:Button id="broBtn0" x="451" y="157" width="50" label="浏览" click="broDataHandler(event)"/>
-	<s:ComboBox id="comboBox" x="71" y="52"/>
+	<s:ComboBox id="comboBox" x="121" y="51"/>
 </s:TitleWindow>
