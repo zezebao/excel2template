@@ -9,6 +9,8 @@ package export
 	import flash.filesystem.FileStream;
 	
 	import mx.controls.Alert;
+	
+	import utils.MyStringUtils;
 
 	public class LuaExport extends Export
 	{
@@ -117,7 +119,7 @@ package export
 					varStr += "self." + value + " = nil";
 					if(desStr != "")
 					{
-						varStr += "\t-- " + desStr;
+						varStr += "\t-- " + MyStringUtils.removeNewLine(desStr);
 					}
 					varStr += "\n\t";
 				}

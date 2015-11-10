@@ -12,6 +12,7 @@ package export
 	
 	import utils.DateUtil;
 	import utils.MyLog;
+	import utils.MyStringUtils;
 
 	/**
 	 * 导出c#模版 
@@ -123,7 +124,7 @@ package export
 					if(desStr != "")
 					{
 						varStr += "/// <summary>";
-						varStr += "\n\t/// " + desStr;
+						varStr += "\n\t/// " + MyStringUtils.removeNewLine(desStr);
 						varStr += "\n\t/// </summary>";
 						varStr += "\n\t";
 					}
