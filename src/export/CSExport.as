@@ -112,6 +112,9 @@ package export
 						case "intArray":
 							parseStr += value + " = bytes.ReadString();";
 							break;
+						default:
+							MyLog.RecordError("为解析的类型：" + excelTypeStr);
+							break;
 					}
 					parseStr += "\n\t\t";
 					

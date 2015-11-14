@@ -10,6 +10,7 @@ package export
 	
 	import mx.controls.Alert;
 	
+	import utils.MyLog;
 	import utils.MyStringUtils;
 
 	public class LuaExport extends Export
@@ -101,11 +102,17 @@ package export
 						case "string":
 							parseStr += "self." + value + " = bytes:readString()";
 							break;
-						case "array": //逗号分隔的数组
-							parseStr += "self." + value + " = gg_string_split(bytes:readString(),',')";
+						case "array": //#号分隔字符串数组
+							parseStr += "self." + value + " = gg_string_split(bytes:readString(),'#')";
 							break;
-						case "intArray"://逗号分隔的数字数组
+						case "intArray"://英文逗号分隔数字数组
 							parseStr += "self." + value + " = gg_string_split_2number(bytes:readString(),',')";
+							break;
+						case "luaString":
+							parseStr += "self." + value + " = gg_loadLuaString(bytes:readString())";
+							break;
+						default:
+							MyLog.RecordError("为解析的类型：" + excelTypeStr);
 							break;
 					}
 					parseStr += "\n\t";

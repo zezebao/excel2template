@@ -117,6 +117,9 @@ package export
 						case "intArray":
 							parseStr += value + " = bytes->readString();";
 							break;
+						default:
+							MyLog.RecordError("为解析的类型：" + excelTypeStr);
+							break;
 					}
 					parseStr += File.lineEnding + "\t";
 					
@@ -232,6 +235,9 @@ package export
 						case "string":
 							typeStr = "std::string";
 							parseStr += value + " = bytes->readString();";
+							break;
+						default:
+							
 							break;
 					}
 					parseStr += File.lineEnding + "\t\t";

@@ -10,6 +10,8 @@ package export
 	
 	import mx.controls.Alert;
 	import mx.logging.Log;
+	
+	import utils.MyLog;
 
 	/**
 	 * JAVA服务器导出 
@@ -100,6 +102,9 @@ package export
 						case "intArray":
 							typeStr = "String";
 							parseStr += "this." + value + " = table.get(\"" + value + "\").toString();";
+							break;
+						default:
+							MyLog.RecordError("为解析的类型：" + excelTypeStr);
 							break;
 					}
 					if(desStr != "")varStr += "/**" + desStr + "*/\n";
